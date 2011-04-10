@@ -1,0 +1,59 @@
+# ucenter client api definination
+-
+  module: user
+  action: register
+  args:
+    username: ""
+    password: ""
+    email: ""
+    questionid: ""
+    answer: ""
+  return: number
+
+-
+  module: user
+  action: login
+  args:
+    username: ""
+    password: ""
+    isuid: 0
+    checkques: 0
+    questionid: ""
+    answer: ""
+  return: array
+
+- 
+  module: user
+  action: synlogin
+  args:
+    uid: 0
+  return: string
+
+-
+  module: user
+  action: synlogout
+  args: !!null
+  return: string
+
+-
+  module: user
+  action: checkemail
+  args:
+    email: ""
+  return: number
+
+-
+  module: user
+  action: checkname
+  args:
+    username: ""
+  return: number
+
+-
+  module: pm
+  action: location
+  args:
+    uid: 0
+    newpm: 0
+  return: url
+

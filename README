@@ -1,0 +1,9 @@
+Yet another UCenter api implement with python, in my case, django.
+
+Why not the django-ucenter in google code?
+I checked out he project and want use it, but it's not pythonic and really smelly... So I have my own one.
+
+Just modify the views.py and remove the settings dependency for your own web framework if you are not using django.
+Just modify the client.generate_interfaces method if you don't like yaml configurations.
+
+KNOWN ISSUE: some pm_* api in ucenter not work, I don't know if it's my ucenter version error...
