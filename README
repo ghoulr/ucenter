@@ -1,9 +1,21 @@
-Yet another UCenter api implement with python, in my case, django.
+UCenter python implement with python.
 
-Why not the django-ucenter in google code?
-I checked out he project and want use it, but it's not pythonic and really smelly... So I have my own one.
+Usage:
 
-Just modify the views.py and remove the settings dependency for your own web framework if you are not using django.
-Just modify the client.generate_interfaces method if you don't like yaml configurations.
+first, put your ucenter settings in ucenter.base.Config, and define uc_* calls in uc_client.yaml, alternatively, you can refine the ucenter.client.generate_interfaces to use your own uc_* call difinations.
+
+import ucenter
+
+# call ucenter
+client = ucenter.Client(request.header['User-Agent'])
+ret = client.uc_user_register(**kw)
+# use ret for your stuff
+
+# for ucenter callback url, just use UcenterAPI:
+class MyUcenterAPI(ucenter.UcenterAPI):
+  def do_user_synlogin(self):
+    # local login stuff
+    return self.API_RETURN_SUCCEED
 
 KNOWN ISSUE: some pm_* api in ucenter not work, I don't know if it's my ucenter version error...
+TODO: need some test cases.

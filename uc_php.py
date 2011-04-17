@@ -1,7 +1,5 @@
 # -*- coding=utf-8 -*-
 
-from django.http import HttpResponse
-
 from ucenter import *
 import urlparse
 
@@ -9,6 +7,8 @@ class UcenterAPI(object):
     API_RETURN_SUCCEED = '1'
     API_RETURN_FAILED = '-1'
     API_RETURN_FORBIDDEN = '-2'
+    API_INVALID = 'Invalid Request'
+    API_AUTH_EXPIRED = 'Authracation has expiried'
 
     def parse_args(self, qs):
         qs = urlparse.parse_qs(qs)
@@ -16,31 +16,35 @@ class UcenterAPI(object):
             qs[k] = qs[k][0]
         return qs
 
-    def __call__(self, request):
-        code = request.REQUEST.get('code', '')
+    def __call__(self, code):
         qs = self.parse_args(Ucenter.authcode_decode(code, Configs.UC_KEY))
         if not qs:
-            return HttpResponse('Invalid Request')
+            return self.API_INVALID
         try:
             if now() - int(qs['time']) > 3600:
-                return HttpResponse('Authracation has expiried')
+                return self.API_AUTH_EXPIRED
         except KeyError:
-            return HttpResponse('Invalid Request')
+            return self.API_INVALID
         except ValueError:
-            return HttpResponse('Invalid Request')
+            return self.API_INVALID
 
         try:
             uc_php = getattr(self, 'do_' + qs['action'], None)
             if not uc_php:
-                return HttpResponse(self.API_RETURN_FORBIDDEN)
-            self._request = request
-            return HttpResponse(uc_php(**qs))
+                return self.API_RETURN_FORBIDDEN
+            return uc_php(**qs)
         except KeyError:
-            return HttpResponse('Invalid Request')
+            return self.API_INVALID
         except NotImplementedError:
-            return HttpResponse(self.API_RETURN_FORBIDDEN)
+            return self.API_RETURN_FORBIDDEN
         except:
-            return HttpResponse('Invalid Request')
+            return self.API_INVALID
 
     def do_test(self, **kwargs):
         return self.API_RETURN_SUCCEED
+
+    def do_synlogin(self, **kwargs):
+        raise NotImplementedError
+
+    def do_synlogout(self, **kwargs):
+        raise NotImplementedError

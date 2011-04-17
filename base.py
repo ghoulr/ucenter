@@ -1,18 +1,16 @@
 # -*- coding=utf-8 -*-
 
-from django.conf import settings
-
 import base64
 import random
 
 from ucenter import *
 
 class Configs(object):
-    UC_KEY = settings.UCENTER_KEY
-    UC_API = settings.UCENTER_API
+    UC_KEY = ''
+    UC_API = ''
     UC_CHARSET = 'utf-8'
     UC_IP = ''
-    UC_APPID = settings.UCENTER_APPID
+    UC_APPID = ''
     UC_PPP = '20'
 
     UC_CLIENT_VERSION = '1.5.2'

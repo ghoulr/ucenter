@@ -13,6 +13,6 @@ def md5(s):
 
 from ucenter.base import Configs, Ucenter
 from ucenter.client import Client
-from ucenter.views import UcenterAPI
+from ucenter.uc_php import UcenterAPI
 
 __all__ = ['Ucenter', 'Configs', 'Client', 'UcenterAPI', 'now', 'md5']

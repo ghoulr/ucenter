@@ -4,6 +4,7 @@ import urllib2
 import os.path
 from urllib import urlencode
 from xml.dom.minidom import parseString
+import functools
 
 from ucenter import *
 
@@ -17,11 +18,11 @@ class UcenterError(Exception):
     errors = ('Access denied for agent changed',
             'Module not found!',
             'Action not found!')
-    pass
+
 
 class Client(object):
-    def __init__(self, request):
-        self._request = request
+    def __init__(self, user_agent):
+        self._user_agent = user_agent
 
     def uc_api_post(self, module, action, **kwargs):
         postdata = urlencode(self.uc_api_requestdata(module, action, kwargs))
@@ -37,7 +38,7 @@ class Client(object):
                 'input': self.uc_api_input(data)}
 
     def uc_api_input(self, data):
-        data['agent'] = md5(self._request.META['HTTP_USER_AGENT'])
+        data['agent'] = md5(self._user_agent)
         data['time'] = str(now())
         return Ucenter.authcode_encode(urlencode(data), Configs.UC_KEY)
 
@@ -45,7 +46,7 @@ class Client(object):
         req = urllib2.Request(url)
         req.add_header('Accept', '*/*')
         req.add_header('Content-Type', 'application/x-www-form-urlencoded')
-        req.add_header('User-Agent', self._request.META['HTTP_USER_AGENT'])
+        req.add_header('User-Agent', self._user_agent)
         req.add_header('Cache-Control', 'no-cache')
         req.add_header('Cookie', '')
 
@@ -64,10 +65,7 @@ class Client(object):
             return self.number_or_string(result)
 
     def number_or_string(self, x):
-        if x.isdigit():
-            return int(x)
-        else:
-            return x
+        return int(x) if x.isdigit() else x
 
     def __getattr__(self, name):
         ifname = name.split('_')
@@ -84,7 +82,7 @@ class Client(object):
                     kw = dict()
                 kw['module'] = ucif['module']
                 kw['action'] = ucif['action']
-                for k in kwargs:
+                for k in kwargs.keys():
                     if not kw.has_key(k):
                         raise KeyError, k
                     kw[k] = kwargs[k]
