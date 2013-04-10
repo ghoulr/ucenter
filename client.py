@@ -68,7 +68,7 @@ class Client(object):
         return int(x) if x.isdigit() else x
 
     def __getattr__(self, name):
-        ifname = name.split('_')
+        ifname = name.split('_', 2)
         if ifname[0] != 'uc':
             raise AttributeError, '\'Client\' object has no attribute \'%s\'' % name
 

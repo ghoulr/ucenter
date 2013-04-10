@@ -22,6 +22,14 @@
     answer: ""
   return: array
 
+-
+  module: user
+  action: get_user
+  args:
+    username: ""
+    isuid: 0
+  return: array
+
 - 
   module: user
   action: synlogin
